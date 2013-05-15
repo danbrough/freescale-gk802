@@ -1,5 +1,7 @@
-#
-#
+# This is a different distribution of the gpu binaries.
+# Not sure what the difference is, but it has hardfp and softfp versions
+# which would be good with a use flag
+# Use the other one (freescale/gpu-viv-bin-mx6q) for the moment
 #
 
 EAPI="5"
@@ -23,20 +25,13 @@ KEYWORDS="arm ~arm"
 #RESTRICT=""
 #DEPEND=""
 #RDEPEND=""
-S=${WORKDIR}
+S=${WORKDIR}/gpu-viv-bin-mx6q-1.1.0-ts/softfp
 OPENGLDIR=usr/lib/opengl/vivante
 
-#src_unpack(){
-#	einfo "src_unpack here at `pwd`"
-#	sh ../distdir/gpu-viv-bin-mx6q-1.1.0.bin --auto-accept
-#}
-
 src_compile(){
-	einfo "Doing stuff here in compile at `pwd` "	
-	cd gpu-viv-bin-mx6q-1.1.0-ts/softfp/
+	#cd gpu-viv-bin-mx6q-1.1.0-ts/softfp/
 	mkdir -p $OPENGLDIR/include
 	mkdir -p $OPENGLDIR/lib
-	#rm -rf usr/lib/directfb-1.4-0
 	rm usr/lib/libGAL-dfb.so
 	mv usr/include/CL $OPENGLDIR/include/
 	mv usr/include/EGL $OPENGLDIR/include/
@@ -49,15 +44,9 @@ src_compile(){
 	cd $OPENGLDIR/lib
 	ln -sf libGL.so.1.2 libGL.so.1
 	ln -sf libGL.so.1.2 libGL.so
-	#die
 }
 
 src_install(){
-	einfo "Installing stuff. Am at `pwd`"
-	cd gpu-viv-bin-mx6q-1.1.0
-	/bin/ls -al 
-	einfo contents of `pwd`
-	ls -al
-	einfo DESTDIR: $DESTDIR D: $D
+	#cd gpu-viv-bin-mx6q-1.1.0/softfp
 	mv * $D
 }
