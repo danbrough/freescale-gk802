@@ -23,6 +23,8 @@ KEYWORDS="arm ~arm"
 #RESTRICT=""
 #DEPEND=""
 #RDEPEND=""
+RDEPEND=">=x11-base/xorg-server-1.6"
+
 S=${WORKDIR}
 
 src_configure(){
@@ -46,7 +48,7 @@ src_compile(){
 
 src_install(){
 	einfo "installing the driver.."
-	mkdir -p $D/usr/lib/xorg/modules/extensions
+	mkdir -p $D/usr/lib/opengl/vivante/extensions
 	mkdir -p $D/usr/lib/xorg/modules/drivers
 	cd xserver-xorg-video-imx-viv-1.1.0
 	cp ./EXA/src/.libs/vivante_drv.so $D/usr/lib/xorg/modules/drivers
