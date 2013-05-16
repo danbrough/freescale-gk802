@@ -27,5 +27,10 @@ KEYWORDS="arm ~arm"
 DEPEND=""
 RDEPEND="${DEPEND}"
 
-#S=${WORKDIR}/${P}
+S=${FILESDIR}
 
+src_install(){
+	cp -av * $D	
+	cd $D
+	chown root:root -R .
+}
