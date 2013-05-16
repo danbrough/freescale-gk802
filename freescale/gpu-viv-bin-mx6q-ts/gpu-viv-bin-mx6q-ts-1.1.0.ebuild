@@ -47,6 +47,5 @@ src_compile(){
 }
 
 src_install(){
-	#cd gpu-viv-bin-mx6q-1.1.0/softfp
 	mv * $D
 }
