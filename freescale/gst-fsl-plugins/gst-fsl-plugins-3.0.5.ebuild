@@ -22,7 +22,7 @@ KEYWORDS="arm ~arm"
 
 #RESTRICT=""
 #DEPEND=""
-#RDEPEND=""
+RDEPEND="freescale/libfslcodec"
 
 
 src_configure(){
