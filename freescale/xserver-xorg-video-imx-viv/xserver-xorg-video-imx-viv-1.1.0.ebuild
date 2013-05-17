@@ -18,18 +18,15 @@ SLOT="0"
 
 KEYWORDS="arm ~arm"
 
-#MERGE_TYPE="binary"
 
-#RESTRICT=""
-#DEPEND=""
-#RDEPEND=""
+DEPEND="freescale/gpu-viv-bin-mx6q"
 RDEPEND=">=x11-base/xorg-server-1.6"
 
-S=${WORKDIR}
+S=${WORKDIR}/${P}
 
 src_configure(){
 	einfo "Configuring source at `pwd`"
-	cd xserver-xorg-video-imx-viv-1.1.0/DRI_1.10.4
+	cd DRI_1.10.4
 	. ./viv-configure.sh
 	sed -i src/drm.h  -e 's:<drm/:<libdrm/:g'
 	cd ../EXA/
@@ -40,7 +37,7 @@ src_configure(){
 
 src_compile(){
 	einfo "compiling the source"
-	cd xserver-xorg-video-imx-viv-1.1.0/DRI_1.10.4
+	cd DRI_1.10.4
 	make
 	cd ../EXA/
 	make
@@ -50,7 +47,6 @@ src_install(){
 	einfo "installing the driver.."
 	mkdir -p $D/usr/lib/opengl/vivante/extensions
 	mkdir -p $D/usr/lib/xorg/modules/drivers
-	cd xserver-xorg-video-imx-viv-1.1.0
 	cp ./EXA/src/.libs/vivante_drv.so $D/usr/lib/xorg/modules/drivers
 	cp ./DRI_1.10.4/src/.libs/libdri.so  ${D}/usr/lib/opengl/vivante/extensions
 }
