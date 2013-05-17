@@ -21,8 +21,7 @@ KEYWORDS="arm ~arm"
 #MERGE_TYPE="binary"
 
 #RESTRICT=""
-#DEPEND=""
-RDEPEND="freescale/libfslcodec"
+DEPEND="freescale/libfslvpuwrap freescale/libfslcodec"
 
 
 src_configure(){
