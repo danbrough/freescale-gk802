@@ -16,21 +16,19 @@ inherit eutils
 # take a look at /usr/portage/eclass/ for more examples.
 
 # Short one-line description of this package.
-DESCRIPTION="Misc configuration files for the gk802"
+DESCRIPTION="Misc example configuration files for the gk802"
 
-HOMEPAGE="http://link_to_some_wiki"
+HOMEPAGE="https://github.com/danbrough/freescale-gk802/wiki"
 
 SLOT="0"
 
 KEYWORDS="arm ~arm"
 
-DEPEND=""
-RDEPEND="${DEPEND}"
-
 S=${FILESDIR}
 
 src_install(){
-	cp -av * $D	
-	cd $D
-	chown root:root -R .
+	mkdir ${D}/etc/gk802
+	cp * ${D}/etc/gk802/
+	einfo "Example configuration files have been installed in /etc/gk802."
+	einfo "You should customize them and copy them to the appropriate directory."
 }

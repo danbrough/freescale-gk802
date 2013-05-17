@@ -1,0 +1,42 @@
+sys-devel/distcc -gtk
+#=sys-devel/gcc-4.6.3  fortran -gtk
+sys-devel/gcc  -gtk -fortran
+dev-libs/libxml2 python
+media-video/mplayer2 -dvdnav -dvd -xscreensaver -cdio 
+media-libs/vo-aacenc -neon 
+media-sound/mpd -alsa mms -fluidsynth pulseaudio sqlite libmms lame ffmpeg
+#media-video/ffmpeg -aac
+sys-fs/cryptsetup -thin
+sys-fs/lvm2 -thin
+
+sys-auth/consolekit  policykit
+dev-vcs/git -webdav -perl -gtk -gpg
+sys-auth/consolekit pam
+sys-auth/polkit pam
+>=net-dialup/ppp-2.4.5-r3 ipv6
+virtual/udev keymap gudev hwdb
+sys-fs/udev gudev hwdb keymap
+
+lxde-base/lxdm gtk3
+www-servers/nginx aio
+sys-fs/aufs3 fuse -kernel-patch ramfs
+media-plugins/gst-plugins-meta alsa ffmpeg flac http mp3 ogg pulseaudio theora v4l vorbis
+
+xfce-extra/xfce4-mpc-plugin libmpd
+media-libs/mesa gbm
+
+sys-apps/hwids udev
+#The following USE changes are necessary to proceed:
+# (see "package.use" in the portage(5) man page for more details)
+# required by www-client/chromium-27.0.1453.81
+# required by www-client/chromium (argument)
+>=dev-libs/libxml2-2.9.0-r2 icu
+# required by www-client/chromium-27.0.1453.81[system-ffmpeg]
+# required by www-client/chromium (argument)
+=media-video/ffmpeg-1.0.7 opus
+# required by www-client/chromium-27.0.1453.81
+# required by www-client/chromium (argument)
+>=sys-libs/zlib-1.2.8 minizip
+
+
+freescale/gpu-viv-bin-mx6q examples
