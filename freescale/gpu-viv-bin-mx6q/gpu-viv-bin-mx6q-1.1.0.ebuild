@@ -19,17 +19,12 @@ SLOT="0"
 
 KEYWORDS="arm ~arm"
 
-#MERGE_TYPE="binary"
-
-#RESTRICT=""
-#DEPEND=""
-#RDEPEND=""
-S=${WORKDIR}
+S=${WORKDIR}/${P}
 OPENGLDIR=usr/lib/opengl/vivante
+IUSE="examples" 
 
 src_compile(){
-	cd gpu-viv-bin-mx6q-1.1.0
-	#rm -rf opt
+	use examples || rm -rf opt
 	mkdir -p $OPENGLDIR/include
 	mkdir -p $OPENGLDIR/lib
 	cd usr/lib
@@ -50,6 +45,5 @@ src_compile(){
 }
 
 src_install(){
-	cd gpu-viv-bin-mx6q-1.1.0
 	mv * $D
 }
