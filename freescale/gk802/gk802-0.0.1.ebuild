@@ -27,7 +27,7 @@ KEYWORDS="arm ~arm"
 S=${FILESDIR}
 
 src_install(){
-	mkdir ${D}/etc/gk802
+	mkdir -p ${D}/etc/gk802
 	cp * ${D}/etc/gk802/
 	einfo "Example configuration files have been installed in /etc/gk802."
 	einfo "You should customize them and copy them to the appropriate directory."
