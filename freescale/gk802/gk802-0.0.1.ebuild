@@ -28,7 +28,10 @@ S=${FILESDIR}
 
 src_install(){
 	mkdir -p ${D}/etc/gk802
-	cp * ${D}/etc/gk802/
+	cp -a *  ${D}/etc/gk802/
+	chown root:root -R ${D}/etc/gk802/
+	einfo ""
 	einfo "Example configuration files have been installed in /etc/gk802."
 	einfo "You should customize them and copy them to the appropriate directory."
+	einfo ""
 }

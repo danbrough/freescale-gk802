@@ -1,0 +1,3 @@
+#!/bin/bash
+exec /usr/lib/distcc/bin/armv7a-softfp-linux-gnueabi-g${0:$[-2]} "$@"
+
