@@ -1,0 +1,253 @@
+[    40.654] 
+X.Org X Server 1.10.6
+Release Date: 2012-02-10
+[    40.654] X Protocol Version 11, Revision 0
+[    40.654] Build Operating System: Linux 3.0.35-02701-g6ea2512 armv7l Gentoo
+[    40.654] Current Operating System: Linux tv.lan 3.0.35-02701-g6ea2512 #4 SMP PREEMPT Sat May 18 09:43:27 EDT 2013 armv7l
+[    40.654] Kernel command line: console=ttymxc3,115200 root=/dev/mmcblk0p2 rootwait rootfstype=ext4 video=mxcfb0:dev=hdmi,1280x720M@60 fbmem=32M
+[    40.655] Build Date: 17 May 2013  09:05:23AM
+[    40.655]  
+[    40.655] Current version of pixman: 0.30.0
+[    40.655] 	Before reporting problems, check http://wiki.x.org
+	to make sure that you have the latest version.
+[    40.655] Markers: (--) probed, (**) from config file, (==) default setting,
+	(++) from command line, (!!) notice, (II) informational,
+	(WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+[    40.656] (==) Log file: "/var/log/Xorg.0.log", Time: Sun May 19 16:38:08 2013
+[    40.665] (==) Using config file: "/etc/X11/xorg.conf"
+[    40.665] (==) Using system config directory "/usr/share/X11/xorg.conf.d"
+[    40.675] (==) ServerLayout "Default Layout"
+[    40.675] (**) |-->Screen "Default Screen" (0)
+[    40.675] (**) |   |-->Monitor "Configured Monitor"
+[    40.675] (**) |   |-->Device "i.MX Accelerated Framebuffer Device"
+[    40.675] (==) Automatically adding devices
+[    40.675] (==) Automatically enabling devices
+[    40.720] (==) FontPath set to:
+	/usr/share/fonts/misc/,
+	/usr/share/fonts/TTF/,
+	/usr/share/fonts/OTF/,
+	/usr/share/fonts/Type1/,
+	/usr/share/fonts/100dpi/,
+	/usr/share/fonts/75dpi/
+[    40.720] (==) ModulePath set to "/usr/lib/xorg/modules"
+[    40.720] (II) The server relies on udev to provide the list of input devices.
+	If no devices become available, reconfigure udev or disable AutoAddDevices.
+[    40.720] (II) Loader magic: 0x1913b4
+[    40.720] (II) Module ABI versions:
+[    40.720] 	X.Org ANSI C Emulation: 0.4
+[    40.720] 	X.Org Video Driver: 10.0
+[    40.720] 	X.Org XInput driver : 12.2
+[    40.720] 	X.Org Server Extension : 5.0
+[    40.721] (II) Open APM successful
+[    40.721] (II) LoadModule: "extmod"
+[    40.729] (II) Loading /usr/lib/xorg/modules/extensions/libextmod.so
+[    40.740] (II) Module extmod: vendor="X.Org Foundation"
+[    40.740] 	compiled for 1.10.6, module version = 1.0.0
+[    40.740] 	Module class: X.Org Server Extension
+[    40.741] 	ABI class: X.Org Server Extension, version 5.0
+[    40.741] (II) Loading extension MIT-SCREEN-SAVER
+[    40.741] (II) Loading extension XFree86-VidModeExtension
+[    40.741] (II) Loading extension XFree86-DGA
+[    40.741] (II) Loading extension DPMS
+[    40.741] (II) Loading extension XVideo
+[    40.741] (II) Loading extension XVideo-MotionCompensation
+[    40.741] (II) Loading extension X-Resource
+[    40.741] (II) LoadModule: "dbe"
+[    40.741] (II) Loading /usr/lib/xorg/modules/extensions/libdbe.so
+[    40.744] (II) Module dbe: vendor="X.Org Foundation"
+[    40.744] 	compiled for 1.10.6, module version = 1.0.0
+[    40.744] 	Module class: X.Org Server Extension
+[    40.744] 	ABI class: X.Org Server Extension, version 5.0
+[    40.744] (II) Loading extension DOUBLE-BUFFER
+[    40.744] (II) LoadModule: "glx"
+[    40.744] (II) Loading /usr/lib/xorg/modules/extensions/libglx.so
+[    40.757] (II) Module glx: vendor="X.Org Foundation"
+[    40.757] 	compiled for 1.10.6, module version = 1.0.0
+[    40.757] 	ABI class: X.Org Server Extension, version 5.0
+[    40.761] (==) AIGLX enabled
+[    40.761] (II) Loading extension GLX
+[    40.761] (II) LoadModule: "record"
+[    40.762] (II) Loading /usr/lib/xorg/modules/extensions/librecord.so
+[    40.764] (II) Module record: vendor="X.Org Foundation"
+[    40.764] 	compiled for 1.10.6, module version = 1.13.0
+[    40.764] 	Module class: X.Org Server Extension
+[    40.764] 	ABI class: X.Org Server Extension, version 5.0
+[    40.764] (II) Loading extension RECORD
+[    40.764] (II) LoadModule: "dri"
+[    40.765] (II) Loading /usr/lib/xorg/modules/extensions/libdri.so
+[    40.771] (II) Module dri: vendor="X.Org Foundation"
+[    40.771] 	compiled for 1.10.6, module version = 1.0.0
+[    40.771] 	ABI class: X.Org Server Extension, version 5.0
+[    40.771] (II) Loading extension XFree86-DRI
+[    40.771] (II) LoadModule: "dri2"
+[    40.772] (II) Loading /usr/lib/xorg/modules/extensions/libdri2.so
+[    40.774] (II) Module dri2: vendor="X.Org Foundation"
+[    40.774] 	compiled for 1.10.6, module version = 1.2.0
+[    40.774] 	ABI class: X.Org Server Extension, version 5.0
+[    40.774] (II) Loading extension DRI2
+[    40.774] (II) LoadModule: "vivante"
+[    40.776] (II) Loading /usr/lib/xorg/modules/drivers/vivante_drv.so
+[    40.805] (II) Module vivante: vendor="X.Org Foundation"
+[    40.805] 	compiled for 1.10.6, module version = 1.0.0
+[    40.805] 	ABI class: X.Org Video Driver, version 10.0
+[    40.805] (II) VIVANTE: fb driver for vivante: VivanteGC500, VivanteGC2100,
+	VivanteGCCORE
+[    40.805] (--) using VT number 7
+
+[    40.819] (WW) Falling back to old probe method for vivante
+[    40.820] (II) Loading sub module "fbdevhw"
+[    40.820] (II) LoadModule: "fbdevhw"
+[    40.820] (II) Loading /usr/lib/xorg/modules/libfbdevhw.so
+[    40.823] (II) Module fbdevhw: vendor="X.Org Foundation"
+[    40.823] 	compiled for 1.10.6, module version = 0.0.2
+[    40.823] 	ABI class: X.Org Video Driver, version 10.0
+[    40.823] (II) Loading /usr/lib/xorg/modules/drivers/vivante_drv.so
+[    40.823] (II) Loading /usr/lib/xorg/modules/libfbdevhw.so
+[    40.823] (II) VIVANTE(0): using default device
+[    40.823] (WW) VGA arbiter: cannot open kernel arbiter, no multi-card support
+[    40.823] (II) VIVANTE(0): Creating default Display subsection in Screen section
+	"Default Screen" for depth/fbbpp 24/32
+[    40.823] (==) VIVANTE(0): Depth 24, (==) framebuffer bpp 32
+[    40.823] (==) VIVANTE(0): RGB weight 888
+[    40.824] (==) VIVANTE(0): Default visual is TrueColor
+[    40.824] (==) VIVANTE(0): Using gamma correction (1.0, 1.0, 1.0)
+[    40.824] (II) VIVANTE(0): hardware: DISP3 BG (video memory: 32768kB)
+[    40.824] (II) VIVANTE(0): checking modes against framebuffer device...
+[    40.824] (II) VIVANTE(0): checking modes against monitor...
+[    40.824] (--) VIVANTE(0): Virtual size is 1280x720 (pitch 1280)
+[    40.824] (**) VIVANTE(0):  Built-in mode "current": 74.2 MHz, 45.0 kHz, 60.0 Hz
+[    40.824] (II) VIVANTE(0): Modeline "current"x0.0   74.25  1280 1390 1430 1650  720 725 730 750 -hsync -vsync -csync (45.0 kHz)
+[    40.824] (==) VIVANTE(0): DPI set to (96, 96)
+[    40.824] (II) Loading sub module "fb"
+[    40.824] (II) LoadModule: "fb"
+[    40.824] (II) Loading /usr/lib/xorg/modules/libfb.so
+[    40.832] (II) Module fb: vendor="X.Org Foundation"
+[    40.832] 	compiled for 1.10.6, module version = 1.0.0
+[    40.833] 	ABI class: X.Org ANSI C Emulation, version 0.4
+[    40.833] (II) Loading sub module "exa"
+[    40.833] (II) LoadModule: "exa"
+[    40.833] (II) Loading /usr/lib/xorg/modules/libexa.so
+[    40.839] (II) Module exa: vendor="X.Org Foundation"
+[    40.839] 	compiled for 1.10.6, module version = 2.5.0
+[    40.839] 	ABI class: X.Org Video Driver, version 10.0
+[    40.839] (--) Depth 24 pixmap format is 32 bpp
+[    40.920] (II) VIVANTE(0): FB Start = 0x3716a000  FB Base = 0x3716a000  FB Offset = (nil)
+[    40.934] (II) VIVANTE(0): test Initializing EXA
+[    40.935] (II) EXA(0): Driver allocated offscreen pixmaps
+[    40.935] (II) EXA(0): Driver registered support for the following operations:
+[    40.935] (II)         Solid
+[    40.935] (II)         Copy
+[    40.935] (II)         Composite (RENDER acceleration)
+[    40.935] (II)         UploadToScreen
+[    40.948] (==) VIVANTE(0): Backing store disabled
+[    40.949] (==) VIVANTE(0): DPMS enabled
+[    40.949] drmOpenDevice: node name is /dev/dri/card0
+[    40.949] drmOpenDevice: open result is 9, (OK)
+[    40.950] drmOpenDevice: node name is /dev/dri/card0
+[    40.950] drmOpenDevice: open result is 9, (OK)
+[    40.950] drmOpenByBusid: Searching for BusID platform:Vivante GCCore
+[    40.950] drmOpenDevice: node name is /dev/dri/card0
+[    40.950] drmOpenDevice: open result is 9, (OK)
+[    40.950] drmOpenByBusid: drmOpenMinor returns 9
+[    40.950] drmOpenByBusid: drmGetBusid reports platform:Vivante GCCore
+[    40.950] (II) [drm] DRM interface version 1.4
+[    40.950] (II) [drm] DRM open master succeeded.
+[    40.950] (II) VIVANTE(0): [drm] Using the DRM lock SAREA also for drawables.
+[    40.950] (II) VIVANTE(0): [drm] framebuffer handle = 0x4e000000
+[    40.951] (II) VIVANTE(0): [drm] added 1 reserved context for kernel
+[    40.951] (II) VIVANTE(0): X context handle = 0x1
+[    40.951] (II) VIVANTE(0): [drm] installed DRM signal handler
+[    40.951] (II) VIVANTE(0): [DRI] installation complete
+[    40.951] (==) RandR enabled
+[    40.951] (II) Initializing built-in extension Generic Event Extension
+[    40.951] (II) Initializing built-in extension SHAPE
+[    40.951] (II) Initializing built-in extension MIT-SHM
+[    40.951] (II) Initializing built-in extension XInputExtension
+[    40.951] (II) Initializing built-in extension XTEST
+[    40.951] (II) Initializing built-in extension BIG-REQUESTS
+[    40.951] (II) Initializing built-in extension SYNC
+[    40.951] (II) Initializing built-in extension XKEYBOARD
+[    40.951] (II) Initializing built-in extension XC-MISC
+[    40.951] (II) Initializing built-in extension XINERAMA
+[    40.951] (II) Initializing built-in extension XFIXES
+[    40.951] (II) Initializing built-in extension RENDER
+[    40.951] (II) Initializing built-in extension RANDR
+[    40.951] (II) Initializing built-in extension COMPOSITE
+[    40.952] (II) Initializing built-in extension DAMAGE
+[    40.987] (II) AIGLX: Screen 0 is not DRI2 capable
+[    40.988] drmOpenDevice: node name is /dev/dri/card0
+[    40.988] drmOpenDevice: open result is 10, (OK)
+[    40.988] drmOpenByBusid: Searching for BusID platform:Vivante GCCore
+[    40.988] drmOpenDevice: node name is /dev/dri/card0
+[    40.988] drmOpenDevice: open result is 10, (OK)
+[    40.988] drmOpenByBusid: drmOpenMinor returns 10
+[    40.988] drmOpenByBusid: Interface 1.4 failed, trying 1.1
+[    40.988] drmOpenByBusid: drmGetBusid reports platform:Vivante GCCore
+[    41.133] (EE) AIGLX error: vivante exports no extensions (/usr/lib/dri/vivante_dri.so: undefined symbol: __driDriverExtensions)
+[    41.133] (EE) AIGLX: reverting to software rendering
+[    41.221] (II) AIGLX: Loaded and initialized /usr/lib/dri/swrast_dri.so
+[    41.221] (II) GLX: Initialized DRISWRAST GL provider for screen 0
+[    42.095] (II) config/udev: Adding input device NOVATEK USB Keyboard (/dev/input/event0)
+[    42.095] (**) NOVATEK USB Keyboard: Applying InputClass "evdev keyboard catchall"
+[    42.096] (II) LoadModule: "evdev"
+[    42.096] (II) Loading /usr/lib/xorg/modules/input/evdev_drv.so
+[    42.100] (II) Module evdev: vendor="X.Org Foundation"
+[    42.100] 	compiled for 1.10.6, module version = 2.7.3
+[    42.100] 	Module class: X.Org XInput Driver
+[    42.100] 	ABI class: X.Org XInput driver, version 12.2
+[    42.100] (II) Using input driver 'evdev' for 'NOVATEK USB Keyboard'
+[    42.100] (II) Loading /usr/lib/xorg/modules/input/evdev_drv.so
+[    42.100] (**) NOVATEK USB Keyboard: always reports core events
+[    42.100] (**) evdev: NOVATEK USB Keyboard: Device: "/dev/input/event0"
+[    42.100] (--) evdev: NOVATEK USB Keyboard: Vendor 0x603 Product 0xf2
+[    42.100] (--) evdev: NOVATEK USB Keyboard: Found keys
+[    42.100] (II) evdev: NOVATEK USB Keyboard: Configuring as keyboard
+[    42.100] (**) Option "config_info" "udev:/sys/devices/platform/fsl-ehci.0/usb1/1-1/1-1.4/1-1.4.2/1-1.4.2:1.0/input/input0/event0"
+[    42.101] (II) XINPUT: Adding extended input device "NOVATEK USB Keyboard" (type: KEYBOARD)
+[    42.101] (**) Option "xkb_rules" "evdev"
+[    42.101] (**) Option "xkb_model" "evdev"
+[    42.101] (**) Option "xkb_layout" "us"
+[    42.186] (II) config/udev: Adding input device NOVATEK USB Keyboard (/dev/input/event1)
+[    42.186] (**) NOVATEK USB Keyboard: Applying InputClass "evdev keyboard catchall"
+[    42.186] (II) Using input driver 'evdev' for 'NOVATEK USB Keyboard'
+[    42.186] (II) Loading /usr/lib/xorg/modules/input/evdev_drv.so
+[    42.186] (**) NOVATEK USB Keyboard: always reports core events
+[    42.186] (**) evdev: NOVATEK USB Keyboard: Device: "/dev/input/event1"
+[    42.186] (--) evdev: NOVATEK USB Keyboard: Vendor 0x603 Product 0xf2
+[    42.186] (--) evdev: NOVATEK USB Keyboard: Found 20 mouse buttons
+[    42.186] (--) evdev: NOVATEK USB Keyboard: Found keys
+[    42.186] (II) evdev: NOVATEK USB Keyboard: Forcing relative x/y axes to exist.
+[    42.186] (II) evdev: NOVATEK USB Keyboard: Configuring as mouse
+[    42.186] (II) evdev: NOVATEK USB Keyboard: Configuring as keyboard
+[    42.187] (**) evdev: NOVATEK USB Keyboard: YAxisMapping: buttons 4 and 5
+[    42.187] (**) evdev: NOVATEK USB Keyboard: EmulateWheelButton: 4, EmulateWheelInertia: 10, EmulateWheelTimeout: 200
+[    42.187] (**) Option "config_info" "udev:/sys/devices/platform/fsl-ehci.0/usb1/1-1/1-1.4/1-1.4.2/1-1.4.2:1.1/input/input1/event1"
+[    42.187] (II) XINPUT: Adding extended input device "NOVATEK USB Keyboard" (type: KEYBOARD)
+[    42.187] (**) Option "xkb_rules" "evdev"
+[    42.187] (**) Option "xkb_model" "evdev"
+[    42.187] (**) Option "xkb_layout" "us"
+[    42.190] (II) config/udev: Adding input device  KYE   Optical Mouse (/dev/input/event2)
+[    42.190] (**)  KYE   Optical Mouse: Applying InputClass "evdev pointer catchall"
+[    42.190] (II) Using input driver 'evdev' for ' KYE   Optical Mouse'
+[    42.190] (II) Loading /usr/lib/xorg/modules/input/evdev_drv.so
+[    42.190] (**)  KYE   Optical Mouse: always reports core events
+[    42.190] (**) evdev:  KYE   Optical Mouse: Device: "/dev/input/event2"
+[    42.191] (--) evdev:  KYE   Optical Mouse: Vendor 0x458 Product 0x7
+[    42.191] (--) evdev:  KYE   Optical Mouse: Found 3 mouse buttons
+[    42.191] (--) evdev:  KYE   Optical Mouse: Found scroll wheel(s)
+[    42.191] (--) evdev:  KYE   Optical Mouse: Found relative axes
+[    42.191] (--) evdev:  KYE   Optical Mouse: Found x and y relative axes
+[    42.191] (II) evdev:  KYE   Optical Mouse: Configuring as mouse
+[    42.191] (II) evdev:  KYE   Optical Mouse: Adding scrollwheel support
+[    42.191] (**) evdev:  KYE   Optical Mouse: YAxisMapping: buttons 4 and 5
+[    42.191] (**) evdev:  KYE   Optical Mouse: EmulateWheelButton: 4, EmulateWheelInertia: 10, EmulateWheelTimeout: 200
+[    42.191] (**) Option "config_info" "udev:/sys/devices/platform/fsl-ehci.0/usb1/1-1/1-1.4/1-1.4.3/1-1.4.3:1.0/input/input2/event2"
+[    42.191] (II) XINPUT: Adding extended input device " KYE   Optical Mouse" (type: MOUSE)
+[    42.191] (II) evdev:  KYE   Optical Mouse: initialized for relative axes.
+[    42.192] (**)  KYE   Optical Mouse: (accel) keeping acceleration scheme 1
+[    42.192] (**)  KYE   Optical Mouse: (accel) acceleration profile 0
+[    42.192] (**)  KYE   Optical Mouse: (accel) acceleration factor: 2.000
+[    42.192] (**)  KYE   Optical Mouse: (accel) acceleration threshold: 4
+[    42.193] (II) config/udev: Adding input device  KYE   Optical Mouse (/dev/input/mouse0)
+[    42.193] (II) No input driver specified, ignoring this device.
+[    42.193] (II) This device may have been added with another device file.
