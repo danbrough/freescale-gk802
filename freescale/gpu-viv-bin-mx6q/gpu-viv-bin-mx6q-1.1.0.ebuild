@@ -39,9 +39,7 @@ src_compile(){
 	mv usr/lib/libEGL*  $OPENGLDIR/lib/
 	mv usr/lib/libGL*  $OPENGLDIR/lib/
 	mv usr/lib/libOpenVG.so  $OPENGLDIR/lib/
-	cd usr/lib
-	ln -sf libEGL.so libEGL.so.1
-	cd ../../
+	ln -s $OPENGLDIR/lib/libEGL.so libEGL.so.1
 	cd $OPENGLDIR/lib
 	ln -sf libGL.so.1.2 libGL.so.1
 	ln -sf libGL.so.1.2 libGL.so
