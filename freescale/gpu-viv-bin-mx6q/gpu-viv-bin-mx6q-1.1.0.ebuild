@@ -25,8 +25,7 @@ IUSE="examples"
 
 src_compile(){
 	use examples || rm -rf opt
-	mkdir -p $OPENGLDIR/include
-	mkdir -p $OPENGLDIR/lib
+	mkdir -p $OPENGLDIR/include $OPENGLDIR/lib $OPENGLDIR/extensions
 	cd usr/lib
 	rm libOpenVG_3D.so
 	ln -s libOpenVG.so libOpenVG_3D.so
@@ -43,6 +42,8 @@ src_compile(){
 	cd $OPENGLDIR/lib
 	ln -sf libGL.so.1.2 libGL.so.1
 	ln -sf libGL.so.1.2 libGL.so
+	cd ../extensions
+	ln -sf ../../xorg-x11/extensions/libglx.so  .
 }
 
 src_install(){
