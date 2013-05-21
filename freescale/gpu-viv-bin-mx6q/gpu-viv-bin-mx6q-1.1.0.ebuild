@@ -21,15 +21,10 @@ KEYWORDS="arm ~arm"
 
 S=${WORKDIR}/${P}
 OPENGLDIR=usr/lib/opengl/vivante
-IUSE="examples" 
 
 src_compile(){
-	use examples || rm -rf opt
+	rm -rf opt
 	mkdir -p $OPENGLDIR/include $OPENGLDIR/lib $OPENGLDIR/extensions
-	cd usr/lib
-	rm libOpenVG_3D.so
-	ln -s libOpenVG.so libOpenVG_3D.so
-	cd ../../	
 	mv usr/include/CL $OPENGLDIR/include/
 	mv usr/include/EGL $OPENGLDIR/include/
 	mv usr/include/GL $OPENGLDIR/include/
@@ -38,12 +33,17 @@ src_compile(){
 	mv usr/lib/libEGL*  $OPENGLDIR/lib/
 	mv usr/lib/libGL*  $OPENGLDIR/lib/
 	mv usr/lib/libOpenVG.so  $OPENGLDIR/lib/
-	ln -s $OPENGLDIR/lib/libEGL.so libEGL.so.1
 	cd $OPENGLDIR/lib
 	ln -sf libGL.so.1.2 libGL.so.1
 	ln -sf libGL.so.1.2 libGL.so
 	cd ../extensions
 	ln -sf ../../xorg-x11/extensions/libglx.so  .
+	
+	cd ../../../
+	rm libOpenVG_3D.so
+	ln -sf libOpenVG.so libOpenVG_3D.so
+        ln -sf libEGL.so libEGL.so.1
+
 }
 
 src_install(){
