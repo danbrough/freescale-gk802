@@ -19,6 +19,7 @@ SLOT="0"
 
 KEYWORDS="arm ~arm"
 
+DEPEND=">=x11-base/xorg-server-1.6"
 S=${WORKDIR}/${P}
 OPENGLDIR=usr/lib/opengl/vivante
 

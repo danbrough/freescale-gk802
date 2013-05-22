@@ -20,7 +20,6 @@ KEYWORDS="arm ~arm"
 
 
 DEPEND="freescale/gpu-viv-bin-mx6q"
-RDEPEND=">=x11-base/xorg-server-1.6"
 
 S=${WORKDIR}/${P}
 
