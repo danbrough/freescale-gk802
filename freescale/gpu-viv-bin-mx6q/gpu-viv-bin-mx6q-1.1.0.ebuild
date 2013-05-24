@@ -19,7 +19,7 @@ SLOT="0"
 
 KEYWORDS="arm ~arm"
 
-DEPEND=">=x11-base/xorg-server-1.6 
+DEPEND="<x11-base/xorg-server-1.12
  	<dev-libs/DirectFB-1.6"
 
 S=${WORKDIR}/${P}
