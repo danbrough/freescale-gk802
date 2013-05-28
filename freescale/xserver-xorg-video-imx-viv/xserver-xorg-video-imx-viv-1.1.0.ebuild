@@ -26,9 +26,11 @@ S=${WORKDIR}/${P}
 src_configure(){
 	einfo "Configuring source at `pwd`"
 	cd DRI_1.10.4
+	mkdir m4
 	. ./viv-configure.sh
 	sed -i src/drm.h  -e 's:<drm/:<libdrm/:g'
 	cd ../EXA/
+	mkdir m4
 	sed -i viv-configure.sh  -e 's:-L${LDFLAGSVIV}: -L${LDFLAGSVIV} -I/usr/include/libdrm:g'
 	. ./viv-configure.sh
 }
