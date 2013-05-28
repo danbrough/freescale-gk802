@@ -25,13 +25,15 @@ S=${WORKDIR}/${P}
 #}
 
 src_compile(){
-	emake PLATFORM=MX6 INCLUDE="-I/usr/src/linux/include" pxp
-	emake PLATFORM=IMX6Q INCLUDE="-I/usr/src/linux/include" vpu
+	cp -av ${FILESDIR}/linux  linux
+	cp -av ${FILESDIR}/linux  linux
+	emake PLATFORM=MX6 INCLUDE=-I${FILESDIR}/headers pxp 
+	emake PLATFORM=IMX6Q INCLUDE=-I${FILESDIR}/headers vpu
 }
 
 
 src_install(){
-	mkdir -p ${D}/usr/include ${D}/usr/include/linux ${D}/usr/lib
+	mkdir -p ${D}/usr/include ${D}/usr/lib
 	cd vpu
 	cp vpu_lib.h ${D}/usr/include
 	cp vpu_io.h  ${D}/usr/include
@@ -43,5 +45,5 @@ src_install(){
 
 	cd ..
 	cp ipu/ipu.h ipu/mxc_ipu_hl_lib.h ${D}/usr/include
-	cp ${FILESDIR}/headers/* ${D}/usr/include/linux/
+	cp -pr ${FILESDIR}/headers/*  ${D}/usr/include/
 }
