@@ -1,0 +1,21 @@
+diff -Naurp libfslcodec-3.0.1-orig/Makefile.in libfslcodec-3.0.1/Makefile.in
+--- libfslcodec-3.0.1-orig/Makefile.in	2012-08-26 09:59:21.000000000 -0400
++++ libfslcodec-3.0.1/Makefile.in	2012-11-21 17:11:06.941956493 -0500
+@@ -1214,7 +1214,7 @@ libfslvideocodecinclude_HEADERS = \
+     $(fslpngdecinclude)           \
+     $(fslgifdecinclude)
+ 
+-libfslaudiocodeclibdir = $(libdir)/imx-mm/audio-codec
++libfslaudiocodeclibdir = $(libdir)
+ libfslaudiocodeclib_DATA = \
+     $(fslpeqlib) 	   \
+     $(fslsrclib) 	   \
+@@ -1238,7 +1238,7 @@ libfslaudiowraplib_DATA = \
+     $(fslmp3decwraplib)   \
+     $(fslvorbisdecwraplib)
+ 
+-libfslvideocodeclibdir = $(libdir)/imx-mm/video-codec
++libfslvideocodeclibdir = $(libdir)
+ libfslvideocodeclib_DATA = \
+     $(fsldeinterlacelib)   \
+     $(fslh264declib)       \

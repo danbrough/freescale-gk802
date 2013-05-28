@@ -22,6 +22,7 @@ KEYWORDS="arm ~arm"
 
 #RESTRICT=""
 DEPEND="=freescale/libfslvpuwrap-1.0.28
+	=freescale/libfslaacpcodec-${PV}
 	freescale/libfslcodec
 	freescale/libfslparser"
 
