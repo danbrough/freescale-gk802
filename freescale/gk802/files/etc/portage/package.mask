@@ -1,0 +1,22 @@
+>sys-apps/baselayout-2.1-r1
+
+#<sys-apps/sysvinit-2.88-r5 ("<sys-apps/sysvinit-2.88-r5" is blocking sys-apps/util-linux-2.23)
+>sys-apps/util-linux-2.21.2
+>=dev-lang/python-3
+
+>sys-fs/udev-171-r10
+>virtual/udev-171
+>=media-libs/mesa-9.0.0
+>=media-plugins/gst-plugins-meta-1.0
+>x11-base/xorg-server-1.10.6-r2
+>sys-kernel/linux-headers-3.1
+>x11-libs/gtk+-3.2.4-r1
+>=media-video/totem-3.0
+#>=gnome-base/gnome-keyring-3
+>sys-auth/polkit-0.110
+>media-sound/gst123-0.3.1
+
+
+>=freescale/libfslcodec-3.0.7
+>=freescale/gst-fsl-plugins-3.0.7
+>freescale/libfslvpuwrap-1.0.28

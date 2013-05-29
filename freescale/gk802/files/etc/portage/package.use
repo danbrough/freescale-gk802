@@ -1,0 +1,5 @@
+sys-devel/gcc -fortran -gtk
+dev-libs/libxml2 python
+sys-auth/polkit -gtk
+>=dev-libs/elfutils-0.155 static-libs
+sys-devel/distcc -gtk
