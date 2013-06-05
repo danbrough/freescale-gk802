@@ -1,0 +1,884 @@
+diff -Naur wmv9mp-decode-1.0.orig/src/Makefile.am wmv9mp-decode-1.0/src/Makefile.am
+--- wmv9mp-decode-1.0.orig/src/Makefile.am	2008-10-17 16:38:32.000000000 -0400
++++ wmv9mp-decode-1.0/src/Makefile.am	2008-10-17 16:39:00.000000000 -0400
+@@ -7,9 +7,9 @@
+ 
+ # flags used to compile this plugin
+ # we use the GST_LIBS flags because we might be using plug-in libs
+-libmfw_gst_wmv9mpdec_la_CFLAGS = $(GST_BASE_CFLAGS) $(GST_LIBS_CFLAGS) -O2 -fno-omit-frame-pointer -fPIC -DOUTPUT_BUFFER_CHANGES -DPADDED_OUTPUT -I../../../../inc/codec -I../../../../inc/plugin 
+-libmfw_gst_wmv9mpdec_la_LIBADD = $(GST_LIBS_LIBS) $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS) -l_WMV9MP_dec_MP_arm11_elinux 
+-libmfw_gst_wmv9mpdec_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -L../../../../libs/codec -lgstriff-@GST_MAJORMINOR@
++libmfw_gst_wmv9mpdec_la_CFLAGS = $(GST_BASE_CFLAGS) $(GST_LIBS_CFLAGS) -O2 -fno-omit-frame-pointer -fPIC -DOUTPUT_BUFFER_CHANGES -DPADDED_OUTPUT
++libmfw_gst_wmv9mpdec_la_LIBADD = $(GST_LIBS_LIBS) $(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS)
++libmfw_gst_wmv9mpdec_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) -lgstriff-@GST_MAJORMINOR@
+ 
+ # headers we need but don't want installed
+ noinst_HEADERS = mfw_gst_wmv9mpdec.h 
+diff -Naur wmv9mp-decode-1.0.orig/src/mfw_gst_bufmgr.h wmv9mp-decode-1.0/src/mfw_gst_bufmgr.h
+--- wmv9mp-decode-1.0.orig/src/mfw_gst_bufmgr.h	1969-12-31 19:00:00.000000000 -0500
++++ wmv9mp-decode-1.0/src/mfw_gst_bufmgr.h	2008-10-17 16:40:32.000000000 -0400
+@@ -0,0 +1,358 @@
++/*=============================================================================
++
++    Header Name:    mfw_gst_bufmgr.h
++
++    General Description:    This Header file contains the code for direct render
++                            abstract interface with GStreamer.
++
++===============================================================================
++                           Freescale Confidential Proprietary
++                                   WMSG - Multimedia
++                   (c) Copyright Freescale 2008, All Rights Reserved
++
++Revision History:
++                                Modification  Tracking
++Author                          Date          Number     Description of Changes
++---------------------           --------     ----------- ----------------------
++Sario Hu(b01138)                03/10/2008      		 Initial Draft Version
++
++
++Portability:    This code is written for Linux OS and Gstreamer
++
++=============================================================================*/
++#ifndef __MFW_GST_BUFMGR_H__
++#define __MFW_GST_BUFMGR_H__
++
++
++#ifndef DIRECT_RENDER_VERSION
++#define DIRECT_RENDER_VERSION 2
++#endif
++
++//#define BM_DEBUG printf
++#ifndef BM_FLOW
++#define BM_FLOW(...)
++#endif
++
++#ifndef BM_TRACE_BUFFER
++#define BM_TRACE_BUFFER(...)
++#endif
++
++
++/*=============================================================================
++                                            MACROS
++=============================================================================*/
++
++
++#if (DIRECT_RENDER_VERSION==1)
++/* Direct render v1, support get/reject decoder interface only */
++
++
++#ifndef RENDER_BUFFER_RESERVE_NUM
++#define RENDER_BUFFER_RESERVE_NUM 1
++#endif
++
++#ifndef RENDER_BUFFER_MAX_NUM
++#define RENDER_BUFFER_MAX_NUM 5
++#endif
++
++
++typedef enum {
++    BMDIRECT = 0,
++	BMINDIRECT = 1
++}BMMode;
++
++
++static BMMode bm_mode = BMDIRECT;
++static GSList * bm_list = NULL;
++static int bm_localbuff_num = 0;
++static int bm_localbuff_size = 0;
++
++#define BM_CLEAN_LIST do{\
++        while(bm_list){\
++            gst_buffer_unref(bm_list->data);\
++            (bm_list) = g_slist_remove((bm_list), (bm_list)->data);\
++		};\
++	}while(0)
++
++
++
++
++#define BM_ALLCATE_RENDER_BUFFER(listbuf, tgtpad, size, pdata) do{\
++		GstBuffer * buffer;\
++		GstFlowReturn result;\
++	    GstCaps *src_caps = NULL;\
++		src_caps = GST_PAD_CAPS((tgtpad));\
++		result = gst_pad_alloc_buffer_and_set_caps((tgtpad), 0,(size), src_caps,&buffer);\
++		if (result==GST_FLOW_OK){\
++			(pdata) = GST_BUFFER_DATA(buffer);\
++			(listbuf)=g_slist_append((listbuf), buffer);\
++			 BM_FLOW("BM_ALLCATE_RENDER_BUFFER %p\n", buffer);\
++		}else{\
++			(pdata) = NULL;\
++			GST_ERROR("BM_ALLCATE_RENDER_BUFFER return failed!\n");\
++		}\
++	}while(0)
++
++#define BM_FREE_RENDER_BUFFER(listbuf, pdata) do{\
++		GSList * tmp = (listbuf);\
++		GstBuffer * buffer;\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++				BM_FLOW("BM_FREE_RENDER_BUFFER %p\n", buffer);\
++				(listbuf) = g_slist_remove((listbuf), buffer);\
++				gst_buffer_unref(buffer);\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			GST_ERROR("BM_FREE_RENDER_BUFFER buffer pointer isn't valid!\n");\
++	}while (0)
++	
++#define BM_RENDER_RENDER_BUFFER(listbuf, pdata, tgtpad, status, timestamp, duration) do{\
++		GSList * tmp = (listbuf);\
++		GstBuffer * buffer;\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++				(listbuf) = g_slist_remove((listbuf), buffer);\
++				BM_FLOW("BM_RENDER_RENDER_BUFFER %p\n", buffer);\
++				GST_BUFFER_TIMESTAMP(buffer) = (timestamp);\
++				GST_BUFFER_DURATION(buffer) = (duration);\
++				status = gst_pad_push((tgtpad), buffer);\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			GST_ERROR("BM_RENDER_RENDER_BUFFER buffer pointer isn't valid!\n");\
++	}while (0)
++
++
++#define BM_ALLCATE_LOCAL_BUFFER(listbuf, tgtpad, size, pdata) do{\
++		GstBuffer * buffer;\
++		while (bm_localbuff_num){\
++			bm_localbuff_size = (size);\
++			buffer = gst_buffer_new_and_alloc((size));\
++			(listbuf)=g_slist_append((listbuf), buffer);\
++			bm_localbuff_num --;\
++		}\
++		buffer = (listbuf)->data;\
++		(listbuf) = g_slist_remove((listbuf), buffer);\
++		(listbuf)=g_slist_append((listbuf), buffer);\
++		pdata = GST_BUFFER_DATA(buffer);\
++		BM_FLOW("BM_ALLCATE_LOCAL_BUFFER %p\n", buffer);\
++	}while(0)
++
++#define BM_FREE_LOCAL_BUFFER(listbuf, pdata) do{\
++		BM_FLOW("BM_FREE_LOCAL_BUFFER %p\n", pdata);\
++	}while (0)
++	
++#define BM_RENDER_LOCAL_BUFFER(listbuf, pdata, tgtpad, status, timestamp, duration) do{\
++		GstBuffer * buffer;\
++		GstFlowReturn result;\
++	    GstCaps *src_caps = NULL;\
++		src_caps = GST_PAD_CAPS((tgtpad));\
++		result = gst_pad_alloc_buffer_and_set_caps((tgtpad), 0, bm_localbuff_size, src_caps,&buffer);\
++		if (result==GST_FLOW_OK){\
++			memcpy(GST_BUFFER_DATA(buffer), pdata, bm_localbuff_size);\
++			GST_BUFFER_TIMESTAMP(buffer) = (timestamp);\
++			GST_BUFFER_DURATION(buffer) = (duration);\
++			BM_FLOW("BM_RENDER_LOCAL_BUFFER %p\n", buffer);\
++			(status) = gst_pad_push((tgtpad), buffer);\
++		}else{\
++			(status) =  result;\
++		}\
++	}while (0)
++
++	
++/* General abstract interface for direct render v1 */
++
++#define BM_INIT(rmdmode, decbufnum, rendbufnum) do{\
++        BM_CLEAN_LIST;\
++        BM_FLOW("BM init, buffer request codec:%d, render:%d.\n", decbufnum, rendbufnum);\
++        bm_mode = (rmdmode);\
++        if ((rmdmode)== BMDIRECT){\
++            if ((decbufnum)+ RENDER_BUFFER_RESERVE_NUM > (rendbufnum))\
++                bm_mode = BMINDIRECT;\
++        }\
++        if (bm_mode == BMINDIRECT){\
++			BM_FLOW("BM run under indirect mode.\n");\
++			bm_localbuff_num = decbufnum;\
++		}else{\
++			BM_FLOW("BM run under direct mode.\n");\
++		}\
++	}while(0)
++        
++        
++#define BM_GET_BUFFER(tgtpad, size, pdata) do{\
++		if (bm_mode==BMDIRECT){\
++			BM_ALLCATE_RENDER_BUFFER(bm_list, tgtpad, size, pdata);\
++		}else{\
++			BM_ALLCATE_LOCAL_BUFFER(bm_list, tgtpad, size, pdata);\
++		}\
++	}while(0)
++
++#define BM_REJECT_BUFFER(pdata) do{\
++		if (bm_mode==BMDIRECT){\
++			BM_FREE_RENDER_BUFFER(bm_list, pdata);\
++		}else{\
++			BM_FREE_LOCAL_BUFFER(bm_list, pdata);\
++		}\
++	}while (0)
++	
++#define BM_RENDER_BUFFER(pdata, tgtpad, status, timestamp, duration) do{\
++	    if (bm_mode==BMDIRECT){\
++			BM_RENDER_RENDER_BUFFER(bm_list, pdata, tgtpad, status, timestamp, duration);\
++		}else{\
++			BM_RENDER_LOCAL_BUFFER(bm_list, pdata, tgtpad, status, timestamp, duration);\
++		}\
++	}while (0)
++
++#define BM_GET_MODE bm_mode
++
++
++#elif (DIRECT_RENDER_VERSION==2)
++/*Direct render v2, support get/release decoder interface only*/
++
++typedef enum {
++    BMDIRECT = 0,
++	BMINDIRECT = 1
++}BMMode;
++
++#define BMFLAG (GST_BUFFER_FLAG_LAST>>1)
++
++static BMMode bm_mode = BMDIRECT;
++static GSList * bm_list = NULL;
++static gint bm_buf_num = 0;
++
++#define BM_CLEAN_LIST do{\
++        while(bm_list){\
++            if (GST_BUFFER_FLAG_IS_SET(bm_list->data, BMFLAG))\
++                gst_buffer_unref(bm_list->data);\
++            gst_buffer_unref(bm_list->data);\
++            (bm_list) = g_slist_remove((bm_list), (bm_list)->data);\
++		};\
++	}while(0)
++
++#define BM_INIT(rmdmode, decbufnum, rendbufnum) do{\
++        BM_FLOW("BM_INIT\n");\
++        bm_buf_num = decbufnum;\
++        BM_CLEAN_LIST;\
++	}while(0)
++        
++        
++#define BM_GET_BUFFER(tgtpad, size, pdata) do{\
++        GstBuffer * buffer;\
++		GstFlowReturn result;\
++	    GstCaps *src_caps = NULL;\
++		src_caps = GST_PAD_CAPS((tgtpad));\
++		result = gst_pad_alloc_buffer_and_set_caps((tgtpad), 0,(size), src_caps,&buffer);\
++		if (result==GST_FLOW_OK){\
++		    GST_BUFFER_FLAG_SET(buffer, BMFLAG);\
++			(pdata) = GST_BUFFER_DATA(buffer);\
++			gst_buffer_ref(buffer);\
++			bm_list=g_slist_append(bm_list, buffer);\
++			BM_FLOW("BM_GET_BUFFERv2 %p:d%p\n", buffer, pdata);\
++			BM_TRACE_BUFFER("codec request %p:d%p\n", buffer, pdata);\
++			break;\
++		}\
++    	if (result!=GST_FLOW_OK){\
++            (pdata)=NULL;\
++            g_print("BM_GET_BUFFERv2 no buffer, %d in codec\n", g_slist_length(bm_list));\
++    	}\
++	}while(0)
++
++#define BM_QUERY_HWADDR(pdata, hwbuffer) do{\
++		GSList * tmp = (bm_list);\
++		GstBuffer * buffer;\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++                (hwbuffer) = GST_BUFFER_OFFSET(buffer);\
++				BM_FLOW("BM_HWTRANSITION v%p=h%p\n", buffer, (hwbuffer));\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			g_print("BM_HWTRANSITION illegal %p!\n", pdata);\    
++	}while (0)
++      
++
++#define BM_RELEASE_BUFFER(pdata) do{\
++		GSList * tmp = (bm_list);\
++		GstBuffer * buffer;\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++				BM_FLOW("BM_RELEASE_BUFFERv2 %p:d%p\n", buffer, pdata);\
++				if (GST_BUFFER_FLAG_IS_SET(buffer, BMFLAG)){\
++                    GST_BUFFER_FLAG_UNSET(buffer, BMFLAG);\
++                }else{\
++				    (bm_list) = g_slist_remove((bm_list), buffer);\
++				    BM_TRACE_BUFFER("codec release %p:d%p\n", buffer, pdata);\
++                }\
++				gst_buffer_unref(buffer);\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			g_print("BM_RELEASE_BUFFERv2 illegal %p!\n", pdata);\    
++	}while (0)
++
++#define BM_REJECT_BUFFER(pdata) do{\
++		GSList * tmp = (bm_list);\
++		GstBuffer * buffer;\
++		g_print("BM_REJECT_BUFFER shuold not here %p!\n", pdata);\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++				BM_FLOW("BM_REJECT_BUFFERv2 %p:d%p\n", buffer, pdata);\
++				if (GST_BUFFER_FLAG_IS_SET(buffer, BMFLAG)){\
++                    GST_BUFFER_FLAG_UNSET(buffer, BMFLAG);\
++                }else{\
++				    (bm_list) = g_slist_remove((bm_list), buffer);\
++				    BM_TRACE_BUFFER("codec release %p:d%p\n", buffer, pdata);\
++				}\
++				gst_buffer_unref(buffer);\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			g_print("BM_RELEASE_BUFFERv2 illegal %p!\n", pdata);\    
++	}while (0)
++
++#define BM_RENDER_BUFFER(pdata, tgtpad, status, timestamp, duration) do{\
++        GSList * tmp = (bm_list);\
++		GstBuffer * buffer;\
++		while(tmp){\
++			buffer = (GstBuffer *)(tmp->data);\
++			if (GST_BUFFER_DATA(buffer)==(pdata)){\
++				BM_FLOW("BM_RENDER_BUFFERv2 %p:d%p\n", buffer, pdata);\
++				if (GST_BUFFER_FLAG_IS_SET(buffer, BMFLAG)){\
++                    GST_BUFFER_FLAG_UNSET(buffer, BMFLAG);\
++                }else{\
++				    (bm_list) = g_slist_remove((bm_list), buffer);\
++				    BM_TRACE_BUFFER("codec release %p:d%p\n", buffer, pdata);\
++				}\
++				GST_BUFFER_TIMESTAMP(buffer) = (timestamp);\
++				GST_BUFFER_DURATION(buffer) = (duration);\
++				status = gst_pad_push((tgtpad), buffer);\
++				break;\
++			}\
++			tmp = tmp->next;\
++		}\
++		if (tmp==NULL)\
++			g_print("BM_RENDER_BUFFERv2 illegal %p!\n", pdata);\	
++	}while (0)
++
++#define BM_GET_MODE bm_mode
++#define BM_GET_BUFFERNUM bm_buf_num
++
++#endif	
++#endif//__MFW_GST_BUFMGR_H__			
++
+diff -Naur wmv9mp-decode-1.0.orig/src/wmv9mp_dec_api.h wmv9mp-decode-1.0/src/wmv9mp_dec_api.h
+--- wmv9mp-decode-1.0.orig/src/wmv9mp_dec_api.h	1969-12-31 19:00:00.000000000 -0500
++++ wmv9mp-decode-1.0/src/wmv9mp_dec_api.h	2008-10-17 16:40:32.000000000 -0400
+@@ -0,0 +1,502 @@
++
++ /************************************************************************
++  * Copyright 2005-2007 by Freescale Semiconductor, Inc.
++  * All modifications are confidential and proprietary information
++  * of Freescale Semiconductor, Inc. ALL RIGHTS RESERVED.
++  ************************************************************************/
++
++/**********************************************************************
++*
++* Motorola Inc.
++* (c) Copyright 2005 Motorola, Inc.
++* ALL RIGHTS RESERVED.
++*
++***********************************************************************
++*
++* File Name: wmv9_dec_api.h
++*
++* Description: This header file describes all the enumerations, data types,
++*              structures, macros and functions to be exposed to the
++*              application developers.
++*
++****************************** Change History**************************
++*
++*    DD/MMM/YYYY     Code Ver     Description            Author
++*    -----------     --------     -----------            ------
++* 01 Feb 2005        0.1       Intial version            Debashis Sarkar
++* 04 Feb 2005        0.2       First version that runs   Debashis
++* 16 Feb 2005        0.3       Review comments           Debashis
++* 23 Aug 2006        0.4       Updated for UYVY          Prachi/Pavan
++*                              support:TLSbo75126
++* 24 Nov 2006        0.5       Increased the maximum     Abhishek M
++*                              number of mem requests
++*                              from 256 to 512.
++*                              Added an memory type
++*                              to indicate
++*                              whether buffer holds the
++*                              output (TLSbo79957)
++* 2 Jan 2007         0.6       Changes for getting       Abhishek M
++*                              padded/non-padded o/p
++* 6 Jun 2007         0.7       Interface Changes for     Jayendran R
++*                              aiding in direct
++*                              rendering (ENGR40526)
++***********************************************************************/
++
++/******************************************************************
++ *MAD ShangHai Change History                                                                 
++ * Nov/30/2007 - Ding Qiang Add Direct Rendering
++ *
++ ******************************************************************/
++#ifndef WMV9_DEC_API_H
++#define WMV9_DEC_API_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/*********** Basic data types ***********/
++
++typedef void               WMV9D_Void;
++
++typedef int                WMV9D_S32;
++typedef unsigned int       WMV9D_U32;
++
++typedef short int          WMV9D_S16;
++typedef short unsigned int WMV9D_U16;
++
++typedef char               WMV9D_S8;
++typedef unsigned char      WMV9D_U8;
++
++
++/******** Call back function pointer type, used in data retrieving *********/
++
++typedef WMV9D_S32 (*FpWmv9DecReadCbkType) (WMV9D_S32 s32BufLen,
++                                           WMV9D_U8* pu8Buf,
++                                           WMV9D_S32* bEndOfFrame,
++                                           WMV9D_Void* pvAppContext);
++
++
++/**************        Macro definitions        *****************/
++
++/* memory types not exactly a bitfield, but could have been */
++
++/* Slow memory is reasonable, and expected */
++#define WMV9D_SLOW_MEMORY       0x0001
++
++/* Fast memory is adviced and desirable. It will have impact on performance */
++#define WMV9D_FAST_MEMORY       0x0002
++
++/* Memory content is used over API calls, and can not be reused in between */
++#define WMV9D_STATIC_MEMORY     0x0004
++
++/* Memory content is not used over API calls, and can be reused in between */
++#define WMV9D_SCRATCH_MEMORY    0x0008
++
++/* Memory required can change, depending of the frame size, or sequence */
++#define WMV9D_SIZE_DEPENDENT    0x0010
++
++/* Memory size has changed after last allocation, or it is being initialized */
++#define WMV9D_SIZE_CHANGED      0x0020
++
++/* Memory needs to be copied to new location, if reallocation happens.
++ * The size to be copied is minimum of old size and current size */
++#define WMV9D_COPY_AT_RESIZE    0x0040
++
++#ifdef OUTPUT_BUFFER_CHANGES
++/*memory req for output buffers*/
++#define WMV9D_OUTPUT_MEMORY    0x0080
++#endif
++
++
++
++/****** macros to extract memory types ******/
++
++/* Returns true if the memory required is fast */
++#define WMV9D_IS_FAST_MEMORY(memType)       ((memType) & WMV9D_FAST_MEMORY)
++
++/* Returns true if the memory reuired can be slow */
++#define WMV9D_IS_SLOW_MEMORY(memType)       ((memType) & WMV9D_SLOW_MEMORY)
++
++
++/* Returns true if the memory usage is static type */
++#define WMV9D_IS_STATIC_MEMORY(memType)     ((memType) & WMV9D_STATIC_MEMORY)
++
++/* Returns true if the memory content is not used over API calls */
++#define WMV9D_IS_SCRATCH_MEMORY(memType)    ((memType) & WMV9D_SCRATCH_MEMORY)
++
++
++/* Returns true, if the buffer size depends on frame size and/or sequence */
++#define WMV9D_IS_SIZE_DEPENDENT_MEMORY(memType) \
++                                            ((memType) & WMV9D_SIZE_DEPENDENT)
++
++/* Returns true if the buffer size has changed after last allocation */
++#define WMV9D_IS_SIZE_CHANGED(memType)      ((memType) & WMV9D_SIZE_CHANGED)
++
++/* Returns true, if the buffer needs to be copied while reallocating */
++#define WMV9D_NEEDS_COPY_AT_RESIZE(memType) ((memType) & WMV9D_COPY_AT_RESIZE)
++
++/* Returns true, if the buffer holds output data */
++#ifdef OUTPUT_BUFFER_CHANGES
++#define WMV9D_IS_OUTPUT_MEMORY(memType)     ((memType) & WMV9D_OUTPUT_MEMORY)
++#endif
++/*
++ * Define to control the loging level. Can be set from build command or here.
++ * The debug levels are currently defined at 4 levels, sequence layer [bit0],
++ * frame layer [bit1], macroblock layer [bit3] and block layer [bit4]. There
++ * is no debug level for each pixel, as it is too much of data to handle. To
++ * enable debug at any level, set the corresponding bit to 1. To enable
++ * function entry and exit, use bit7. Please note that function entry and
++ * exit will be loged only for the levels, where the debug is on.
++ */
++
++#ifndef WMV9_DEBUG_LEVEL
++#define WMV9_DEBUG_LEVEL  0x00    /* no debugging is set */
++#endif
++
++
++/*
++ * Maximum number of memory requests that can be made by the decoder. Do not
++ * modify this value.
++ */
++#ifndef WMV9_SIMPLE_ONLY
++#define WMV9D_MAX_NUM_MEM_REQS              512
++#else
++#define WMV9D_MAX_NUM_MEM_REQS              256
++#endif
++
++/*
++ * Bit buffer size used by the decoder. The memory required for this is
++ * allocated through memquery API as fast memory. Do not make it huge, as
++ * it is never required to hold more than one frame worth data at any given
++ * time. It may contain part of one frames data, if frame data size is larger.
++ */
++
++#define WMV9D_BIT_BUFFER_LENGTH    256
++
++
++/*********** enumeration types ***********/
++
++/*
++ * Return types from all of the decoder API's, except the format converter
++ */
++
++typedef enum
++{
++    /* Successfull return values */
++    E_WMV9D_SUCCESS = 0,          /* Successful completion                  */
++
++    /* Successful return with a warning, no action needs to be taken        */
++    E_WMV9D_ERROR_CONCEALED = 11, /* Error in the bit stream, but concealed */
++    E_WMV9D_ENDOF_BITSTREAM,      /* End of Bit Stream                      */
++#if SKIP_ENABLE//ENGR38817
++    E_WMV9D_SKIPPED_FRAME,        /* The frame has been skipped             */
++#endif
++    /* Successful return with a warning, correct the situation and continue */
++    E_WMV9D_NOT_ENOUGH_BITS=31,   /* Not enough bits are provided           */
++    E_WMV9D_BAD_MEMORY,           /* Out of memory                          */
++    E_WMV9D_WRONG_ALIGNMENT,      /* Incorrect memory alignment             */
++    E_WMV9D_SIZE_CHANGED,         /* Image size changed                     */
++    E_WMV9D_NO_OUTPUT,            /* No output frame is available           */
++    E_WMV9D_BROKEN_FRAME,         /* Should have more data in this frame    */
++
++    /* irrecoverable error type, may need re-initialization to continue     */
++    E_WMV9D_CORRUPTED_BITS=51,    /* Error bit stream                       */
++    E_WMV9D_FAILED,               /* Failure                                */
++    E_WMV9D_UNSUPPORTED,          /* Unsupported format                     */
++    E_WMV9D_NO_KEYFRAME_DECODED,  /* first frame is not an I frame          */
++    E_WMV9D_SIZE_NOT_FOUND,       /* Frame size not found in bit stream     */
++    E_WMV9D_NOT_INITIALIZED,      /* Decoder is not initialized             */
++    E_WMV9D_INVALID_ARGUMENTS,     /* Argument to the API is invalid         */
++    E_WMV9D_SET_CB_OK,            /*!< Decoder Register call back OK       */
++    E_WMV9D_SET_CB_FAIL           /*!< Decoder Register call back FAIL       */    
++} eWmv9DecRetType;
++
++
++/*
++ * Memory alignment types enumeration.
++ */
++
++typedef enum
++{
++    E_WMV9D_ALIGN_NONE = 0,       /* buffer can start at any place          */
++    E_WMV9D_ALIGN_HALF_WORD,      /* address's last bit has to be 0         */
++    E_WMV9D_ALIGN_WORD,           /* address's last 2 bits has to be 0      */
++    E_WMV9D_ALIGN_DWORD,          /* address's last 3 bits has to be 0      */
++    E_WMV9D_ALIGN_QWORD,          /* address's last 4 bits has to be 0      */
++    E_WMV9D_ALIGN_OCTAWORD        /* address's last 5 bits has to be 0      */
++} eWmv9DecMemAlignType;
++
++
++/*
++ * Type of the VOP decoded last.
++ */
++
++typedef enum
++{
++    E_WMV9D_INTRA_VOP,           /* Intra VOP or I-VOP	                    */
++    E_WMV9D_INTER_VOP,           /* Inter VOP or P-VOP	                    */
++    E_WMV9D_BIDIR_VOP,           /* Bidirectional VOP or B-VOP              */
++    E_WMV9D_UNKNOWN_VOP,         /* Unknown, should not happen              */
++} eWmv9DecVOPType;
++
++
++/*
++ * Defines the encoding bitstream. It does not cover all of the possible asf
++ * string. Use the converter function to convert the asf string to this type,
++ * in case multiple types are supported by same application. Otherwise (only
++ * one format is guranteed at the input) application can use the corresponding
++ * value directly, without trying to use asf format string.
++ */
++
++typedef enum
++{
++    E_WMV9D_COMP_FMT_WMV9,       /* WMV9 encoded bitstream                  */
++    E_WMV9D_COMP_FMT_WMV8,       /* WMV8 encoded bitstream                  */
++    E_WMV9D_COMP_FMT_WMV7,       /* WMV7 encoded bitstream                  */
++    E_WMV9D_COMP_FMT_UNSUPPORTED /* Unsupported encoded bitstream           */
++} eWmv9DecCompFmtType;
++
++
++/************ Decoder data structures ***********/
++
++/* Data structure to define each memory block request */
++
++typedef struct
++{
++    WMV9D_S32            s32Size;     /* Current size requirement            */
++    WMV9D_S32            s32MemType;  /* Memory type description             */
++    WMV9D_S32            s32Priority; /* determines impact on the performance */
++    eWmv9DecMemAlignType eMemAlign;   /* Memory alignment of the buffer      */
++    WMV9D_S32            s32OldSize;  /* Old size, in case being reallocated */
++    WMV9D_S32            s32MaxSize;  /* Maximum size that can be asked for  */
++    WMV9D_Void*          pvUnalignedBuffer;  /* unaligned buffer pointer     */
++    WMV9D_Void*          pvBuffer;    /* buffer start address with alignment */
++} sWmv9DecMemBlockType;
++
++
++/*ENGR40526_START
++* Data structure to hold output buffer information
++*/
++
++typedef struct
++{
++	WMV9D_S32	s32CropLeft; /* Crop size on left */
++	WMV9D_S32	s32CropRight; /* Crop size on right */
++	WMV9D_S32	s32CropTop; /* Crop size at top */
++	WMV9D_S32	s32CropBottom; /* Crop size at bottom */
++	WMV9D_U32	u32NumBuffers; /* Number of output buffers */
++} sWmv9DecOutputInfo;
++/*ENGR40526_END*/
++
++/*
++ * Data structure to define the complete memmory requests
++ */
++
++typedef struct
++{
++    WMV9D_S32             s32NumReqs;  /* Number of valid requests           */
++    sWmv9DecMemBlockType  asMemBlks[WMV9D_MAX_NUM_MEM_REQS]; /* requests     */
++/*ENGR40526_START*/
++    sWmv9DecOutputInfo    sOutputInfo; /*output buffer information*/
++/*ENGR40526_END*/
++    WMV9D_S32             s32MinFrameBufferNum;  /*!< minimum number of frame buffer MAD ShangHai*/
++} sWmv9DecMemAllocInfoType;
++
++
++/*Added to support UYVY and IYUV and IYUV padded data*/
++
++typedef enum tagVideoFormat_WMC
++{
++    IYUV_WMV=0,
++
++    #ifdef OUTPUT_BUFFER_CHANGES
++    IYUV_WMV_PADDED,
++    #endif
++
++    #ifndef WMV9_SIMPLE_ONLY
++    UYVY_WMV
++    #endif
++
++} tVideoFormat_WMC;
++
++
++
++/*
++ * Structure to hold the decoded frame information.
++ * Please note that currently the row size for Cb and Cr contains same value
++ */
++
++typedef struct
++{
++    WMV9D_U8* pu8YBuf;      /* Y component data buffer start address  */
++    WMV9D_U8* pu8CbBuf;     /* Cb component data buffer start address */
++    WMV9D_U8* pu8CrBuf;     /* Cr component data buffer start address */
++
++    WMV9D_S32       s32YRowSize;  /* Row size of Y data buffer  (padded width Luma)            */
++    WMV9D_S32       s32CbRowSize; /* Row size of Cb data buffer (padded width Chroma)          */
++    WMV9D_S32       s32CrRowSize; /* Row size of Cr data buffer (padded width Chroma)          */
++    #ifdef OUTPUT_BUFFER_CHANGES
++    tVideoFormat_WMC tOutputFormat;
++    #endif
++} sWmv9DecYCbCrBufferType;
++
++
++/*
++ * Structure to hold the parameters that are passed from application to
++ * decoder and vice versa. Frame rate and bitrate, though set by application
++ * initialy, can be corrected by decoder while initilizing.
++ */
++
++typedef struct
++{
++    sWmv9DecYCbCrBufferType sOutputBuffer;      /* decoded frame information */
++    eWmv9DecCompFmtType     eCompressionFormat; /* encoding format info      */
++    WMV9D_S32               s32FrameRate;       /* Frame rate in fps         */
++    WMV9D_S32               s32BitRate;         /* Bit rate in bps           */
++    WMV9D_U16               u16FrameWidth;      /* Frame width in pixels     */
++    WMV9D_U16               u16FrameHeight;     /* Frame hight in pixels     */
++    WMV9D_U32               u32PrevFrameNum;    /* Please see the API doc    */
++    WMV9D_U32               u32CurrFrameNum;    /* Last decoded frame number */
++    eWmv9DecVOPType         eVopType;           /* Last decoded frame's type */
++} sWmv9DecParamsType;
++
++typedef enum 
++{
++    E_RELEASE_FRAME =0,
++    E_REJECT_FRAME,
++    E_GET_FRAME
++} eWmv9CallbackType; //add this to indicate additional callback function type.
++//add a API function to register additional callback function
++
++/**************************************************
++ * Direct rendering type and data structure
++ **************************************************/
++typedef void* (*bufferGetter)(void* /*pvAppContext*/);
++typedef void (*bufferRejecter)(void* /*mem_ptr*/, void* /*pvAppContext*/);
++typedef void (*bufferReleaser)(void* /*mem_ptr*/, void* /*pvAppContext*/);
++//typedef void* (*bufferGetter)(void);
++//typedef void (*bufferRejecter)(void* /*mem_ptr*/);
++
++typedef struct _WMV9D_FrameManager
++{
++    bufferGetter BfGetter;
++    bufferRejecter BfRejector;
++}WMV9D_FrameManager;
++
++/*
++ * Main WMV9 decoder object. This is used in all decoder API.
++ */
++
++typedef struct
++{
++    sWmv9DecMemAllocInfoType sMemInfo;     /* memory requirements            */
++    sWmv9DecParamsType       sDecParam;    /* sequence/frame paramters       */
++    WMV9D_Void*              pvWmv9Obj;    /* internal decoder object        */
++    WMV9D_Void*              pvBitBuffer;  /* buffer for bitstream           */
++    WMV9D_Void*              pvAppContext; /* application context for cbk    */
++    FpWmv9DecReadCbkType     pfCbkBuffRead;/* Callback function pointer      */
++	WMV9D_FrameManager		 frameManager; /* MAD Shanghai Add for Direct Rendering*/
++} sWmv9DecObjectType;
++
++#ifdef __SYMBIAN32__
++#define IMPORT_C __declspec(dllimport)
++#define EXPORT_C __declspec(dllexport)
++#else
++#define IMPORT_C
++#define EXPORT_C
++#endif
++
++
++/************  function definitions *****************/
++
++/* Small utility functions, helpful to the application */
++
++/*
++ * Returns the compression format type used in API, given the ASF file
++ * compression format string. Right now, only WMV[123] strings are supported.
++ * For the rest types, it returns unsupported format type.
++ */
++
++IMPORT_C eWmv9DecCompFmtType eWMV9DCompFormat (const WMV9D_U8* format);
++
++
++/***********  main API functions **********/
++
++/*
++ * Query for the memory requirement, given width and height of frame
++ * The decoder sets the Meminfo structure with the required memory buffer
++ * requests.
++ * TODO : The object already has width and height, do we need to pass
++ *        it separately ?
++ */
++
++IMPORT_C eWmv9DecRetType eWMV9DQuerymem (sWmv9DecObjectType* psWmv9Obj,
++                                WMV9D_S32 s32Height, WMV9D_S32 s32Width);
++
++
++
++/*
++ * Initialise the decoder object and parses the sequence header, if required.
++ * The memory requested should be met and the buffer pointers are provided.
++ * Decoder, after actual initialization, parses the sequence header and sets
++ * few decoder parameters (like frame rate, bitrate). It can potentially call
++ * the callback function, so set the function callback before calling API.
++ */
++
++IMPORT_C eWmv9DecRetType eWMV9DInit (sWmv9DecObjectType* psWmv9DecObj);
++
++
++
++/*
++ * Decode one frame from the bitstream,
++ * This function gets the data using the callback function, so make sure that
++ * it is properly set. The decoded data will be available as read only in the
++ * output frame buffer structure. If no frames has been skipped, the
++ * u32CurFrameNumber will provide the frame number for this frame.
++ */
++
++IMPORT_C eWmv9DecRetType eWMV9DDecode (sWmv9DecObjectType* psWmv9Obj,
++                              WMV9D_U32 u32FrameDataSize);
++
++typedef eWmv9DecRetType ( *WMV9DecodeFunc) (sWmv9DecObjectType* psWmv9Obj,
++                              WMV9D_U32 u32FrameDataSize);
++
++
++
++
++/*
++ * Free the decoder structure (mainly reset the decoder internals)
++ */
++
++IMPORT_C eWmv9DecRetType eWMV9DFree (sWmv9DecObjectType *psWmv9Obj);
++
++#ifdef OUTPUT_BUFFER_CHANGES
++/*! API to get the output frame*/
++eWmv9DecRetType  eWMV9DecGetOutputFrame (sWmv9DecObjectType *psWmv9Obj);
++#endif
++
++
++#if SKIP_ENABLE//ENGR38817
++
++/*
++ * API to enable the 'skip to next I VOP mode' of the decoder
++ */
++
++eWmv9DecRetType  eWMV9DEnableSkipMode  (sWmv9DecObjectType *psWmv9Obj);
++
++
++#endif
++
++/**************************************************
++ * Direct rendering API functions
++ **************************************************/
++/*! \brief
++ *        Set the Frame manager to decoder
++ */
++extern void WMV9DSetBufferManager (sWmv9DecObjectType *psWmv9Obj, WMV9D_FrameManager* manager);
++extern eWmv9DecRetType eWMV9DSetAdditionalCallbackFunction (sWmv9DecObjectType *psWmv9Obj, eWmv9CallbackType funcType, void* cbFunc);
++
++#ifdef __cplusplus
++}
++#endif
++#endif /* WMV9_DEC_API_H  */

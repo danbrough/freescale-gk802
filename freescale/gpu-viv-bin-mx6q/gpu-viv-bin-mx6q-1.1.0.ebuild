@@ -19,7 +19,8 @@ SLOT="0"
 
 KEYWORDS="arm ~arm"
 
-DEPEND="<x11-base/xorg-server-1.12
+DEPEND="=freescale/firmware-imx-1.1.0
+	<x11-base/xorg-server-1.12
  	<dev-libs/DirectFB-1.6"
 
 S=${WORKDIR}/${P}

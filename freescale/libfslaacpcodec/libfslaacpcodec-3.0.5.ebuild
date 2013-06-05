@@ -15,7 +15,7 @@ LICENSE="freescale"
 SLOT="0"
 
 KEYWORDS="arm ~arm"
-
+DEPEND="freescale/libfslcodec"
 #MERGE_TYPE="binary"
 
 src_prepare(){

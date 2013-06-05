@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="arm ~arm"
 
 
-DEPEND="freescale/gpu-viv-bin-mx6q"
+#DEPEND="freescale/gpu-viv-bin-mx6q"
 
 S=${WORKDIR}/${P}
 

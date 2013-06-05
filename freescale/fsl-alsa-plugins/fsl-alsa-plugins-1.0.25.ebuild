@@ -19,7 +19,7 @@ KEYWORDS="arm ~arm"
 #MERGE_TYPE="binary"
 
 #RESTRICT=""
-#DEPEND="freescale/libfpu"
+DEPEND="freescale/imx-lib"
 #RDEPEND=""
 #S=${WORKDIR}
 
